@@ -1,0 +1,69 @@
+{% extends 'flights/base.html' %}
+
+{% block title %}Ana Sayfa - Airline Management System{% endblock %}
+
+{% block content %}
+<h2>Hoş Geldiniz</h2>
+<p>Havayolu Yönetim Sistemine hoş geldiniz. Bu sistem ile uçak filosunuzu, yolcularınızı, uçuşlarınızı ve rezervasyonlarınızı yönetebilirsiniz.</p>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ total_aircraft }}</h3>
+        <p>Toplam Uçak</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h3>{{ active_aircraft }}</h3>
+        <p>Aktif Uçak</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <h3>{{ total_passengers }}</h3>
+        <p>Toplam Yolcu</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+        <h3>{{ total_flights }}</h3>
+        <p>Toplam Uçuş</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+        <h3>{{ total_airports }}</h3>
+        <p>Toplam Havalimanı</p>
+    </div>
+</div>
+
+<h3 style="margin-top: 2rem;">Yaklaşan Uçuşlar</h3>
+{% if upcoming_flights %}
+<table>
+    <thead>
+        <tr>
+            <th>Uçuş No</th>
+            <th>Kalkış</th>
+            <th>Varış</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>Uçak</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for flight in upcoming_flights %}
+        <tr>
+            <td><a href="{% url 'flights:flight_detail' flight.flight_id %}">{{ flight.flight_number }}</a></td>
+            <td>{{ flight.departure_airport.iata_code }} - {{ flight.departure_airport.city }}</td>
+            <td>{{ flight.arrival_airport.iata_code }} - {{ flight.arrival_airport.city }}</td>
+            <td>{{ flight.flight_date }}</td>
+            <td>{{ flight.flight_time }}</td>
+            <td>{{ flight.aircraft.code_number }}</td>
+            <td>{{ flight.get_status_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Yaklaşan uçuş bulunmamaktadır.</p>
+{% endif %}
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'flights:aircraft_list' %}" class="btn">Tüm Uçakları Görüntüle</a>
+    <a href="{% url 'flights:flight_list' %}" class="btn">Tüm Uçuşları Görüntüle</a>
+    <a href="{% url 'flights:passenger_list' %}" class="btn">Tüm Yolcuları Görüntüle</a>
+</div>
+{% endblock %}

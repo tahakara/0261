@@ -1,0 +1,21 @@
+# Plugin-Based Image and Video Processing Software
+# Python 3.9+ Required
+
+# UI Framework
+PySide6==6.6.1
+PySide6-Addons==6.6.1
+PySide6-Essentials==6.6.1
+
+# Computer Vision
+opencv-python==4.8.1.78
+opencv-contrib-python==4.8.1.78
+
+# Numerical Computing
+numpy==1.26.2
+
+# Image Processing
+Pillow==10.1.0
+
+# Utilities
+typing-extensions==4.9.0
+mediapipe==0.10.1

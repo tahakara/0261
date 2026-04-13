@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TimerProject</string>
+    <string name="Start">Basla</string>
+    <string name="Pause">Durdur</string>
+    <string name="Reset">Sifirla</string>
+    <string name="Wellcome">Timer Project</string>
+    <string name="Done">Timer Bitti</string>
+    <string name="SecondsRemaining">Saniye Kaldi: </string>
+</resources>

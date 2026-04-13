@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:background="#FFFF00">
+
+        <EditText
+            android:id="@+id/editTxtBirinciSayi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:inputType="numberSigned"
+            android:text=""
+            android:textSize="17sp"
+            android:textColor="#000000"
+            android:hint="birinci sayiyi giriniz" />
+
+        <EditText
+            android:id="@+id/editTxtIkinciSayi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editTxtBirinciSayi"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="ikinci sayiyi giriniz"
+            android:inputType="numberSigned"
+            android:text=""
+            android:textColor="#000000"
+            android:textSize="17sp" />
+        <Button
+            android:id="@+id/btnCarp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editTxtIkinciSayi"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:text="*"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#800080" />
+
+        <Button
+            android:id="@+id/btnBolme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnCarp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="/"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#800080" />
+
+        <Button
+            android:id="@+id/btnFark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnBolme"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="-"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#800080" />
+
+        <Button
+            android:id="@+id/btnTopla"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnFark"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="+"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#800080" />
+
+        <TextView
+            android:id="@+id/txtViewSonuc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnTopla"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:text="Sonuc"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/txtViewUyari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtViewSonuc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,365 @@
+{% extends 'flights/base.html' %}
+
+{% block title %}{{ flight.flight_number }} - Uçuş Detayı{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+    #flight-map {
+        width: 100%;
+        height: 500px;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .map-container {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+    
+    /* Loading Overlay - Only over table */
+    .table-wrapper {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    #loadingModal {
+        display: none;
+        position: absolute;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(3px);
+        border-radius: 8px;
+    }
+    
+    .loading-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 0.5rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        font-size: 0.95rem;
+        color: #555;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>{{ flight.flight_number }} - {{ flight.departure_airport.iata_code }} → {{ flight.arrival_airport.iata_code }}</h2>
+
+<div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+    <h3>Uçuş Bilgileri</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+        <div>
+            <p><strong>Uçuş No:</strong> {{ flight.flight_number }}</p>
+            <p><strong>Kalkış Havalimanı:</strong> <a href="{% url 'flights:airport_detail' flight.departure_airport.airport_id %}">{{ flight.departure_airport.airport_name }}</a> ({{ flight.departure_airport.iata_code }}/{{ flight.departure_airport.icao_code }}) - {{ flight.departure_airport.city }}, {{ flight.departure_airport.country }}</p>
+            <p><strong>Varış Havalimanı:</strong> <a href="{% url 'flights:airport_detail' flight.arrival_airport.airport_id %}">{{ flight.arrival_airport.airport_name }}</a> ({{ flight.arrival_airport.iata_code }}/{{ flight.arrival_airport.icao_code }}) - {{ flight.arrival_airport.city }}, {{ flight.arrival_airport.country }}</p>
+            <p><strong>Tarih:</strong> {{ flight.flight_date }}</p>
+            <p><strong>Saat:</strong> {{ flight.flight_time }}</p>
+            <p><strong>Uçak:</strong> <a href="{% url 'flights:aircraft_detail' flight.aircraft.aircraft_id %}">{{ flight.aircraft.code_number }} - {{ flight.aircraft.brand }} {{ flight.aircraft.model }}</a></p>
+            <p><strong>Durum:</strong> {{ flight.get_status_display }}</p>
+            <p><strong>Kapasite:</strong> {{ flight.aircraft.passenger_capacity }}</p>
+            <p><strong>Mevcut Koltuk:</strong> {{ available_seats }}</p>
+        </div>
+        
+        <div>
+            <h4 style="text-align: center; margin-bottom: 1rem;">Koltuk Doluluk Oranı</h4>
+            <div style="max-width: 250px; margin: 0 auto;">
+                <canvas id="capacityChart"></canvas>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <p><strong>Dolu:</strong> {{ flight.bookings.count }} koltuk ({% widthratio flight.bookings.count flight.aircraft.passenger_capacity 100 %}%) | <strong>Boş:</strong> {{ available_seats }} koltuk ({% widthratio available_seats flight.aircraft.passenger_capacity 100 %}%)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flight Route Map -->
+<!-- Debug: Check coordinates -->
+<!-- Departure: {{ departure_lat }}, {{ departure_lon }} -->
+<!-- Arrival: {{ arrival_lat }}, {{ arrival_lon }} -->
+
+{% if departure_lat and departure_lon and arrival_lat and arrival_lon %}
+<div class="map-container">
+    <h3>Uçuş Rotası</h3>
+    <div id="flight-map"></div>
+</div>
+{% else %}
+<div class="map-container">
+    <h3>Uçuş Rotası</h3>
+    <p style="color: #dc3545;">❌ Harita gösterilemiyor - Havalimanı koordinatları eksik</p>
+    <p><small>Kalkış koordinatları: {{ departure_lat|default:"Yok" }}, {{ departure_lon|default:"Yok" }}</small></p>
+    <p><small>Varış koordinatları: {{ arrival_lat|default:"Yok" }}, {{ arrival_lon|default:"Yok" }}</small></p>
+</div>
+{% endif %}
+
+<h3>Rezervasyonlar ({{ bookings.count }} Yolcu)</h3>
+<div class="table-wrapper">
+    <!-- Loading Overlay -->
+    <div id="loadingModal">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Yükleniyor...</div>
+        </div>
+    </div>
+    
+    <div style="overflow-x: auto;">
+        <table id="bookingsTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Yolcu No</th>
+                    <th>Yolcu Adı</th>
+                    <th>Koltuk</th>
+                    <th>Durum</th>
+                    <th>Rezervasyon Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'flights:flight_list' %}" class="btn">Uçuş Listesine Dön</a>
+    <a href="{% url 'flights:index' %}" class="btn">Ana Sayfaya Dön</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show loading modal function
+        function showLoading() {
+            document.getElementById('loadingModal').style.display = 'block';
+        }
+        
+        // Hide loading modal function
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+        
+        // Initialize DataTables for bookings with server-side processing
+        var bookingsTable = $('#bookingsTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{% url "flights:flight_bookings_ajax" flight.flight_id %}',
+                type: 'GET',
+                beforeSend: function() {
+                    showLoading();
+                },
+                complete: function() {
+                    hideLoading();
+                },
+                error: function() {
+                    hideLoading();
+                }
+            },
+            columns: [
+                { data: 0, orderable: true },  // Yolcu No
+                { data: 1, orderable: true },  // Yolcu Adı
+                { data: 2, orderable: true },  // Koltuk
+                { data: 3, orderable: true },  // Durum
+                { data: 4, orderable: true }   // Rezervasyon Tarihi
+            ],
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Tümü"]],
+            language: {
+                processing: "İşleniyor...",
+                lengthMenu: "_MENU_ kayıt göster",
+                zeroRecords: "Kayıt bulunamadı",
+                info: "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
+                infoEmpty: "Kayıt yok",
+                infoFiltered: "(_MAX_ kayıt içinden filtrelendi)",
+                search: "Ara:",
+                paginate: {
+                    first: "İlk",
+                    last: "Son",
+                    next: "Sonraki",
+                    previous: "Önceki"
+                }
+            },
+            order: [[4, 'desc']]  // Sort by booking date descending
+        });
+        
+        // Capacity Donut Chart
+        var ctx = document.getElementById('capacityChart').getContext('2d');
+        var totalCapacity = {{ flight.aircraft.passenger_capacity }};
+        var bookedSeats = {{ flight.bookings.count }};
+        var availableSeats = {{ available_seats }};
+        
+        var capacityChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Dolu Koltuklar', 'Boş Koltuklar'],
+                datasets: [{
+                    data: [bookedSeats, availableSeats],
+                    backgroundColor: [
+                        '#dc3545',  // Kırmızı - Dolu
+                        '#28a745'   // Yeşil - Boş
+                    ],
+                    borderColor: [
+                        '#fff',
+                        '#fff'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                var value = context.parsed || 0;
+                                var percentage = ((value / totalCapacity) * 100).toFixed(1);
+                                return label + ': ' + value + ' koltuk (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'  // Donut hole size
+            }
+        });
+    });
+</script>
+
+{% if departure_lat and departure_lon and arrival_lat and arrival_lon %}
+{% load l10n %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // Flight Map
+    (function() {
+        // Initialize the map
+        var depLat = {% localize off %}{{ departure_lat|default:"0" }}{% endlocalize %};
+        var depLon = {% localize off %}{{ departure_lon|default:"0" }}{% endlocalize %};
+        var arrLat = {% localize off %}{{ arrival_lat|default:"0" }}{% endlocalize %};
+        var arrLon = {% localize off %}{{ arrival_lon|default:"0" }}{% endlocalize %};
+        
+        console.log('Departure:', depLat, depLon);
+        console.log('Arrival:', arrLat, arrLon);
+        
+        // Calculate center point between departure and arrival
+        var centerLat = (depLat + arrLat) / 2;
+        var centerLon = (depLon + arrLon) / 2;
+        
+        // Initialize map centered between the two airports
+        var map = L.map('flight-map').setView([centerLat, centerLon], 4);
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Create custom icons for departure and arrival
+        var departureIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background-color: #28a745; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 20px;">🛫</div>',
+            iconSize: [35, 35],
+            iconAnchor: [17, 17]
+        });
+        
+        var arrivalIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background-color: #f9d83f; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 20px;">🛬</div>',
+            iconSize: [35, 35],
+            iconAnchor: [17, 17]
+        });
+        
+        // Add departure airport marker
+        var departureMarker = L.marker([depLat, depLon], {icon: departureIcon}).addTo(map);
+        departureMarker.bindPopup('<b>Kalkış:</b><br>{{ flight.departure_airport.airport_name }}<br>{{ flight.departure_airport.iata_code }}/{{ flight.departure_airport.icao_code }}<br>{{ flight.departure_airport.city }}, {{ flight.departure_airport.country }}');
+        
+        // Add arrival airport marker
+        var arrivalMarker = L.marker([arrLat, arrLon], {icon: arrivalIcon}).addTo(map);
+        arrivalMarker.bindPopup('<b>Varış:</b><br>{{ flight.arrival_airport.airport_name }}<br>{{ flight.arrival_airport.iata_code }}/{{ flight.arrival_airport.icao_code }}<br>{{ flight.arrival_airport.city }}, {{ flight.arrival_airport.country }}');
+        
+        // Create a curved line (using a simple arc simulation)
+        var curvedPath = [];
+        var steps = 50; // Number of points in the curve
+        for (var i = 0; i <= steps; i++) {
+            var t = i / steps;
+            var lat = depLat + (arrLat - depLat) * t;
+            var lon = depLon + (arrLon - depLon) * t;
+            
+            // Add slight curve by adjusting the midpoint
+            var curveFactor = Math.sin(t * Math.PI) * 2; // Adjust multiplier for curve height
+            lat += curveFactor;
+            
+            curvedPath.push([lat, lon]);
+        }
+        
+        var flightPath = L.polyline(curvedPath, {
+            color: '#007bff',
+            weight: 3,
+            opacity: 0.7,
+            dashArray: '10, 5'
+        }).addTo(map);
+        
+        // Add plane icon in the middle of the route
+        var midLat = (depLat + arrLat) / 2 + 2; // Offset for curve
+        var midLon = (depLon + arrLon) / 2;
+        
+        var planeIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="font-size: 24px; transform: rotate(45deg);">✈️</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+        
+        L.marker([midLat, midLon], {icon: planeIcon}).addTo(map);
+        
+        // Fit map bounds to show both airports
+        var bounds = L.latLngBounds([
+            [depLat, depLon],
+            [arrLat, arrLon]
+        ]);
+        map.fitBounds(bounds, {padding: [50, 50]});
+    })();
+</script>
+{% endif %}
+{% endblock %}

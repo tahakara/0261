@@ -1,0 +1,108 @@
+{% extends 'flights/base.html' %}
+
+{% block title %}{{ passenger.full_name }} - Yolcu Detayı{% endblock %}
+
+{% block content %}
+<h2>{{ passenger.full_name }}</h2>
+
+<div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+    <h3>Yolcu Bilgileri</h3>
+    <p><strong>Yolcu No:</strong> {{ passenger.passenger_number }}</p>
+    <p><strong>Ad:</strong> {{ passenger.first_name }}</p>
+    <p><strong>Soyad:</strong> {{ passenger.last_name }}</p>
+    {% if passenger.birth_date %}
+    <p><strong>Doğum Tarihi:</strong> {{ passenger.birth_date|date:"d.m.Y" }} ({{ passenger.age }} yaşında)</p>
+    {% endif %}
+    {% if passenger.gender %}
+    <p><strong>Cinsiyet:</strong> {{ passenger.get_gender_display }}</p>
+    {% endif %}
+    <p><strong>Kayıt Tarihi:</strong> {{ passenger.created_at|date:"d.m.Y H:i" }}</p>
+</div>
+
+<h3>Telefon Numaraları</h3>
+{% if phones %}
+<table>
+    <thead>
+        <tr>
+            <th>Tip</th>
+            <th>Numara</th>
+            <th>Birincil</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for phone in phones %}
+        <tr>
+            <td>{{ phone.get_phone_type_display }}</td>
+            <td>{{ phone.phone_number }}</td>
+            <td>{% if phone.is_primary %}✓{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Telefon numarası bulunmamaktadır.</p>
+{% endif %}
+
+<h3>Adresler</h3>
+{% if addresses %}
+<table>
+    <thead>
+        <tr>
+            <th>Tip</th>
+            <th>Adres</th>
+            <th>Şehir</th>
+            <th>Ülke</th>
+            <th>Birincil</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for address in addresses %}
+        <tr>
+            <td>{{ address.get_address_type_display }}</td>
+            <td>{{ address.address_line }}</td>
+            <td>{{ address.city|default:"-" }}</td>
+            <td>{{ address.country|default:"-" }}</td>
+            <td>{% if address.is_primary %}✓{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Adres bulunmamaktadır.</p>
+{% endif %}
+
+<h3>Rezervasyonlar</h3>
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>Uçuş No</th>
+            <th>Kalkış</th>
+            <th>Varış</th>
+            <th>Tarih</th>
+            <th>Koltuk</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td><a href="{% url 'flights:flight_detail' booking.flight.flight_id %}">{{ booking.flight.flight_number }}</a></td>
+            <td>{{ booking.flight.departure_airport.iata_code }} - {{ booking.flight.departure_airport.city }}</td>
+            <td>{{ booking.flight.arrival_airport.iata_code }} - {{ booking.flight.arrival_airport.city }}</td>
+            <td>{{ booking.flight.flight_date }}</td>
+            <td>{{ booking.seat_number|default:"Atanmadı" }}</td>
+            <td>{{ booking.get_booking_status_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Rezervasyon bulunmamaktadır.</p>
+{% endif %}
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'flights:passenger_list' %}" class="btn">Yolcu Listesine Dön</a>
+    <a href="{% url 'flights:index' %}" class="btn">Ana Sayfaya Dön</a>
+</div>
+{% endblock %}

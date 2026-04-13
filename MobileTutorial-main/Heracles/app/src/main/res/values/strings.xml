@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Heracles</string>
+    <item name="ulkeler" type="array">
+        <string name="Turkey">Turkey</string>
+        <string name="Germany">Germany</string>
+        <string name="France">France</string>
+        <string name="Italy">Italy</string>
+        <string name="Spain">Spain</string>
+    </item>
+
+    <string-array name="ulkeler1">
+        <item>Turkey</item>
+        <item>Germany</item>
+        <item>France</item>
+        <item>Italy</item>
+        <item>Spain</item>
+    </string-array>
+
+    <string-array name="renkler">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Yellow</item>
+        <item>Black</item>
+    </string-array>
+
+</resources>

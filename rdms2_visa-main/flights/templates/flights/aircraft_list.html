@@ -1,0 +1,580 @@
+{% extends 'flights/base.html' %}
+
+{% block title %}Uçaklar - Airline Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        padding: 1rem 0;
+    }
+    .chart-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chart-container h3 {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+    }
+    @media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .collapsable-section {
+        margin-bottom: 2rem;
+    }
+    .collapsable-header {
+        background: #3498db;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .collapsable-header:hover {
+        background: #2980b9;
+    }
+    .collapsable-content {
+        max-height: 1200px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    .collapsable-content.collapsed {
+        max-height: 0;
+    }
+    .filter-form {
+        background: #f5f5f5;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+    .filter-form h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    .filter-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .filter-row input, .filter-row select {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .filter-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .pagination .btn {
+        padding: 0.5rem 1rem;
+        margin: 0;
+    }
+    .pagination span {
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    /* Hide Django pagination when DataTables is active */
+    .pagination {
+        display: none !important;
+    }
+    
+    /* DataTables Controls Styling */
+    .dataTables_wrapper {
+        padding: 1rem 0;
+    }
+    
+    .dataTables_length {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_length label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .dataTables_length select {
+        padding: 0.5rem 2rem 0.5rem 0.75rem;
+        border: 2px solid #3498db;
+        border-radius: 6px;
+        background-color: white;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .dataTables_length select:hover {
+        border-color: #2980b9;
+        box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+    }
+    
+    .dataTables_length select:focus {
+        outline: none;
+        border-color: #2980b9;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .dataTables_filter input {
+        padding: 0.5rem 1rem;
+        border: 2px solid #3498db;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 250px;
+        transition: all 0.3s ease;
+    }
+    
+    .dataTables_filter input:hover {
+        border-color: #2980b9;
+        box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+    }
+    
+    .dataTables_filter input:focus {
+        outline: none;
+        border-color: #2980b9;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .dataTables_info {
+        padding: 0.75rem 0;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+    
+    .dataTables_paginate {
+        padding: 0.75rem 0;
+    }
+    
+    .dataTables_paginate .paginate_button {
+        padding: 0.5rem 1rem;
+        margin: 0 0.25rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        color: #2c3e50;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .dataTables_paginate .paginate_button:hover {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+    }
+    
+    .dataTables_paginate .paginate_button.current {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+        font-weight: bold;
+    }
+    
+    .dataTables_paginate .paginate_button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .dataTables_paginate .paginate_button.disabled:hover {
+        background: white;
+        color: #2c3e50;
+        border-color: #ddd;
+    }
+    
+    /* Responsive DataTables wrapper */
+    @media (max-width: 768px) {
+        .dataTables_filter input {
+            width: 100%;
+        }
+    }
+    
+    /* Loading Overlay - Only over table */
+    .table-wrapper {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    #loadingModal {
+        display: none;
+        position: absolute;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(3px);
+        border-radius: 8px;
+    }
+    
+    .loading-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 0.5rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        font-size: 0.95rem;
+        color: #555;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Uçak Listesi</h2>
+
+<!-- Collapsable Charts Section -->
+<div class="collapsable-section">
+    <div class="collapsable-header" onclick="toggleCharts()">
+        <span>📊 İstatistikler ve Grafikler</span>
+        <span id="charts-toggle">▼</span>
+    </div>
+    <div class="collapsable-content" id="charts-section">
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Markalara Göre Dağılım</h3>
+                <div class="chart-wrapper">
+                    <canvas id="brandChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Yolcu Kapasitesine Göre Dağılım</h3>
+                <div class="chart-wrapper">
+                    <canvas id="capacityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Menzile Göre Dağılım (km)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="rangeChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Duruma Göre Dağılım</h3>
+                <div class="chart-wrapper">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="table-section"></div>
+
+<!-- Filter Form -->
+<div class="filter-form">
+    <h3>🔍 Filtreleme</h3>
+    <form method="get" action="#table-section">
+        <div class="filter-row">
+            <div>
+                <label for="brand">Marka:</label>
+                <select name="brand" id="brand">
+                    <option value="">Tümü</option>
+                    {% for brand in brands %}
+                    <option value="{{ brand }}" {% if current_brand == brand %}selected{% endif %}>{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label for="status">Durum:</label>
+                <select name="status" id="status">
+                    <option value="">Tümü</option>
+                    <option value="active" {% if current_status == 'active' %}selected{% endif %}>Aktif</option>
+                    <option value="maintenance" {% if current_status == 'maintenance' %}selected{% endif %}>Bakımda</option>
+                    <option value="repair" {% if current_status == 'repair' %}selected{% endif %}>Tamirde</option>
+                    <option value="inactive" {% if current_status == 'inactive' %}selected{% endif %}>Pasif</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="is_active">Aktiflik:</label>
+                <select name="is_active" id="is_active">
+                    <option value="">Tümü</option>
+                    <option value="true" {% if current_is_active == 'true' %}selected{% endif %}>Aktif</option>
+                    <option value="false" {% if current_is_active == 'false' %}selected{% endif %}>Pasif</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="search_form">Arama (Kod/Model):</label>
+                <input type="text" name="search_form" id="search_form" value="{{ current_search }}" placeholder="TC-XXX veya Model">
+            </div>
+        </div>
+        
+        <div class="filter-buttons">
+            <button type="submit" class="btn">Filtrele</button>
+            <a href="{% url 'flights:aircraft_list' %}" class="btn" style="background-color: #95a5a6;">Temizle</a>
+        </div>
+    </form>
+</div>
+
+<div class="table-wrapper">
+    <!-- Loading Overlay -->
+    <div id="loadingModal">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Yükleniyor...</div>
+        </div>
+    </div>
+    
+    <table id="aircraftTable" class="display">
+        <thead>
+            <tr>
+                <th>Kod</th>
+                <th>Marka</th>
+                <th>Model</th>
+                <th>Kapasite</th>
+                <th>Menzil (km)</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be loaded via AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'flights:index' %}" class="btn">Ana Sayfaya Dön</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Toggle charts visibility
+    function toggleCharts() {
+        const chartsSection = document.getElementById('charts-section');
+        const toggleIcon = document.getElementById('charts-toggle');
+        
+        if (chartsSection.classList.contains('collapsed')) {
+            chartsSection.classList.remove('collapsed');
+            toggleIcon.textContent = '▼';
+        } else {
+            chartsSection.classList.add('collapsed');
+            toggleIcon.textContent = '▶';
+        }
+    }
+    
+    // Show loading modal function
+    function showLoading() {
+        document.getElementById('loadingModal').style.display = 'block';
+    }
+    
+    // Hide loading modal function
+    function hideLoading() {
+        document.getElementById('loadingModal').style.display = 'none';
+    }
+    
+    // Initialize DataTables with server-side processing
+    $(document).ready(function() {
+        var table = $('#aircraftTable').DataTable({
+            "processing": false,
+            "serverSide": true,
+            "ajax": {
+                "url": "{% url 'flights:aircraft_ajax' %}",
+                "type": "GET",
+                "data": function(d) {
+                    // Add filter parameters
+                    d.brand = $('#brand').val();
+                    d.status = $('#status').val();
+                    d.is_active = $('#is_active').val();
+                    d.search_form = $('#search_form').val();
+                },
+                "beforeSend": function() {
+                    showLoading();
+                },
+                "complete": function() {
+                    hideLoading();
+                },
+                "error": function() {
+                    hideLoading();
+                }
+            },
+            "language": {
+                "lengthMenu": "Sayfa başına _MENU_ kayıt göster",
+                "zeroRecords": "Kayıt bulunamadı",
+                "info": "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
+                "infoEmpty": "Kayıt yok",
+                "infoFiltered": "(_MAX_ kayıt içinden filtrelendi)",
+                "search": "Ara:",
+                "paginate": {
+                    "first": "İlk",
+                    "last": "Son",
+                    "next": "Sonraki",
+                    "previous": "Önceki"
+                },
+                "emptyTable": "Tabloda veri bulunmamaktadır",
+                "loadingRecords": "Yükleniyor...",
+                "processing": "İşleniyor..."
+            },
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+            "order": [[0, 'asc']],
+            "columnDefs": [
+                { "orderable": false, "targets": 6 }
+            ],
+            "dom": '<"top"lf>rt<"bottom"ip><"clear">'
+        });
+        
+       // Reload table when filter form is submitted
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+            table.ajax.reload();
+        });
+    });
+    
+    // Chart colors
+    const chartColors = [
+        'rgba(102, 126, 234, 0.8)',
+        'rgba(118, 75, 162, 0.8)',
+        'rgba(240, 147, 251, 0.8)',
+        'rgba(245, 87, 108, 0.8)',
+        'rgba(79, 172, 254, 0.8)',
+        'rgba(0, 242, 254, 0.8)',
+        'rgba(67, 233, 123, 0.8)',
+        'rgba(56, 249, 215, 0.8)',
+        'rgba(250, 112, 154, 0.8)',
+        'rgba(254, 225, 64, 0.8)'
+    ];
+
+    // Common chart options
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            }
+        }
+    };
+
+    // Brand Chart
+    const brandCtx = document.getElementById('brandChart').getContext('2d');
+    const brandLabels = {{ brand_labels|safe }};
+    const brandData = {{ brand_data|safe }};
+    new Chart(brandCtx, {
+        type: 'pie',
+        data: {
+            labels: brandLabels,
+            datasets: [{
+                data: brandData,
+                backgroundColor: chartColors.slice(0, brandLabels.length)
+            }]
+        },
+        options: commonOptions
+    });
+
+    // Capacity Chart
+    const capacityCtx = document.getElementById('capacityChart').getContext('2d');
+    const capacityLabels = {{ capacity_labels|safe }};
+    const capacityData = {{ capacity_data|safe }};
+    new Chart(capacityCtx, {
+        type: 'pie',
+        data: {
+            labels: capacityLabels,
+            datasets: [{
+                data: capacityData,
+                backgroundColor: chartColors.slice(0, capacityLabels.length)
+            }]
+        },
+        options: commonOptions
+    });
+
+    // Range Chart
+    const rangeCtx = document.getElementById('rangeChart').getContext('2d');
+    const rangeLabels = {{ range_labels|safe }};
+    const rangeData = {{ range_data|safe }};
+    new Chart(rangeCtx, {
+        type: 'pie',
+        data: {
+            labels: rangeLabels,
+            datasets: [{
+                data: rangeData,
+                backgroundColor: chartColors.slice(0, rangeLabels.length)
+            }]
+        },
+        options: commonOptions
+    });
+
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusLabels = {{ status_labels|safe }};
+    const statusData = {{ status_data|safe }};
+    new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusData,
+                backgroundColor: chartColors.slice(0, statusLabels.length)
+            }]
+        },
+        options: commonOptions
+    });
+</script>
+{% endblock %}

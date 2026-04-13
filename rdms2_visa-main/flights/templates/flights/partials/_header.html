@@ -1,0 +1,14 @@
+<header>
+    <h1>✈️ Airline Management System</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'flights:index' %}">Ana Sayfa</a></li>
+            <li><a href="{% url 'flights:aircraft_list' %}">Uçaklar</a></li>
+            <li><a href="{% url 'flights:passenger_list' %}">Yolcular</a></li>
+            <li><a href="{% url 'flights:flight_list' %}">Uçuşlar</a></li>
+            <li><a href="{% url 'flights:airport_list' %}">Havalimanları</a></li>
+            <li><a href="{% url 'flights:booking_list' %}">Rezervasyonlar</a></li>
+            <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
+        </ul>
+    </nav>
+</header>

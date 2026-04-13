@@ -1,0 +1,168 @@
+{% extends 'flights/base.html' %}
+
+{% block title %}{{ airport.airport_name }} - Airline Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .map-container-detail {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+    .map-container-detail iframe {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>{{ airport.airport_name }}</h2>
+
+<div class="detail-card">
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start;">
+        <!-- Airport Image -->
+        <div style="text-align: center;">
+            <img src="https://placehold.co/300x200/2ecc71/ffffff?text={{ airport.iata_code|urlencode }}+Airport" 
+                 alt="{{ airport.airport_name }}" 
+                 style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <p style="margin-top: 0.5rem; color: #7f8c8d; font-size: 0.9em;">{{ airport.city }}, {{ airport.country }}</p>
+        </div>
+        
+        <!-- Airport Information -->
+        <div>
+            <h3 style="margin-top: 0;">Havalimanı Bilgileri</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <strong>IATA Kodu:</strong>
+                    <span>{{ airport.iata_code }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>ICAO Kodu:</strong>
+                    <span>{{ airport.icao_code }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Şehir:</strong>
+                    <span>{{ airport.city }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Ülke:</strong>
+                    <span>{{ airport.country }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Durum:</strong>
+                    <span>
+                        {% if airport.is_active %}
+                            <span style="color: green;">✓ Aktif</span>
+                        {% else %}
+                            <span style="color: red;">✗ Pasif</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <strong>Oluşturma Tarihi:</strong>
+                    <span>{{ airport.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Son Güncelleme:</strong>
+                    <span>{{ airport.updated_at|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Airport Location Map -->
+<div class="map-container-detail">
+    <h3>Havalimanı Konumu (Google Maps)</h3>
+    <iframe 
+        src="https://maps.google.com/maps?q={{ airport.airport_name|urlencode }}+{{ airport.city|urlencode }}+{{ airport.country|urlencode }}&output=embed"
+        width="100%" 
+        height="450" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy">
+    </iframe>
+</div>
+
+<div class="detail-card">
+    <h3>Kalkış Uçuşları (Son 10)</h3>
+    {% if departures %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Uçuş No</th>
+                        <th>Uçak</th>
+                        <th>Varış Yeri</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for flight in departures %}
+                    <tr>
+                        <td>{{ flight.flight_number }}</td>
+                        <td>{{ flight.aircraft.brand }} {{ flight.aircraft.model }}</td>
+                        <td>{{ flight.arrival_airport.iata_code }} - {{ flight.arrival_airport.city }}</td>
+                        <td>{{ flight.flight_date|date:"d/m/Y" }}</td>
+                        <td>{{ flight.flight_time|time:"H:i" }}</td>
+                        <td>{{ flight.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'flights:flight_detail' flight.flight_id %}" class="btn-small">Detay</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Bu havalimanından kalkış yapan uçuş bulunmamaktadır.</p>
+    {% endif %}
+</div>
+
+<div class="detail-card">
+    <h3>İniş Uçuşları (Son 10)</h3>
+    {% if arrivals %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Uçuş No</th>
+                        <th>Uçak</th>
+                        <th>Kalkış Yeri</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for flight in arrivals %}
+                    <tr>
+                        <td>{{ flight.flight_number }}</td>
+                        <td>{{ flight.aircraft.brand }} {{ flight.aircraft.model }}</td>
+                        <td>{{ flight.departure_airport.iata_code }} - {{ flight.departure_airport.city }}</td>
+                        <td>{{ flight.flight_date|date:"d/m/Y" }}</td>
+                        <td>{{ flight.flight_time|time:"H:i" }}</td>
+                        <td>{{ flight.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'flights:flight_detail' flight.flight_id %}" class="btn-small">Detay</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Bu havalimanına iniş yapan uçuş bulunmamaktadır.</p>
+    {% endif %}
+</div>
+
+<div class="actions">
+    <a href="{% url 'flights:airport_list' %}" class="btn">Havalimanları Listesine Dön</a>
+</div>
+{% endblock %}
