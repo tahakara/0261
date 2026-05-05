@@ -1,0 +1,77 @@
+.dnns-body {
+    background-color: #f0f0f7;
+}
+
+.dnns-body-main-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.dnns-product {
+    border: rgba(0, 0, 0, 0.5) solid 1px;
+    border-radius: 20px;
+    height: 60vh;
+    background-color: #fff;
+}
+
+.dnns-product:hover {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+.dnns-product-img {
+    max-width: -webkit-fill-available;
+    border-radius: 20px;
+}
+
+.dnns-product-detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.dnns-product-detail > .col-md-10 {
+    margin-top: 5vh;
+}
+
+.dnns-product-detail > .col-md-10 > .row > .col-md-12 > .row {
+    justify-content: space-between;
+}
+
+.dnns-product-detail-name {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.dnns-product-detail-ingredients {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.dnns-product-detail-price {
+    font-size: 25px;
+    color: #A38248;
+    font-weight: 700;
+}
+
+.dnns-product-detail-buy {
+    border: 2px solid #3e4959;
+    border-radius: 20px;
+    text-align: center;
+    background-color: #f0f0f7;
+}
+
+.dnns-product-detail-buy > a {
+    /* padding: 5px; */
+    padding: unset;
+    text-decoration: none;
+    color: blue;
+    cursor: pointer;
+}
+
+.dnns-product-detail-buy > a > span {
+    font-size: 20px;
+    font-weight: 600;
+}

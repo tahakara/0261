@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Donino's Pizza</title>
+    <meta name="keywords" content="doninos, pizza, Doninos, Pizza, Doninos Pizza, donino's, Donino's Pizza, Donino's, Mehmet Demirel">
+    <meta name="description" content="You are not pizza, you can't satisfy everyone.">
+    <meta name="author" content="Mehmet Demirel<<">
+    <link rel="icon" type="image/x-icon" href="images/Doninos_Logo.png">
+    <link rel="apple-touch-icon" href="images/Doninos_Logo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+    
+
+    <section class="dnns-header">
+        <span id="isWorking"></span>
+        <div class="container-fluid dnns-main-header">
+            <div class="row dnns-main-header-row">
+                <div class="col-md-2"></div>
+                <div class="col-md-3 dnns-header-banner">
+                    <a href="/">
+                        <img src="images/Doninos_Banner.png" alt="header_logo">
+                    </a>
+                </div>
+                <div class="col-md-4 dnns-header-nav">
+                    <div class="row dnns-header-naw-row">
+                        <div class="col-md-4">
+                            <a href="/">
+                                <span>Home</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/contact.html">
+                                <span>Contact</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 dnns-header-cart">
+                    <a>
+                        <span class="cart-icon-span">
+                            <i class="fa-solid fa-cart-shopping" alt="cart"></i>
+                        </span>
+                    </a>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+
+        <!-- Sub Header -->
+        <div class="container-fluid dnns-sub-header">
+            <div class="container">
+
+                <div class="row dnns-sub-header-row">
+                    <div class="col-md-6 dnns-sub-header-col">
+
+                        <div class="col-md-3 dnns-delivery-opt">
+                            <div>
+                                <i class="fa-solid fa-motorcycle"></i>
+                                <span>
+                                    Home Delivery
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 dnns-delivery-loc">
+                            <div class="container">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span data-location="">000000000000000000000</span>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4 dnns-dark-mode">
+                            <label class="switch">
+                                <input type="checkbox" name="dnns-dark-check" placeholder="dark">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <span class="cartMenu"> 
+            <div class="row cart-list" >
+
+            </div>
+        </span>
+    </section>
+
+    <!-- Body -->
+    <section class="dnns-body">
+        <div class="container pt-5 pb-5">
+            <div class="row dnns-body-main-row">
+
+                <!-- Complaint -->
+                <div class="col-md-12 dnns-cmplt mb-3">
+                    <h2>Complaint</h2>
+                    <form action="" class="row" >
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="cmplt-subject" id="cmplt-subject" placeholder="Subject" required>
+                            </div>
+                            
+                            <div class="col-md-12">    
+                                <textarea  class="form-control"name="cmplt-detail" id="" cols="30" rows="5" placeholder="Detail" required></textarea>
+                            </div>
+                            
+                            <div class="col-md-12">    
+                                <input class="form-control" type="submit" class="btn btn-primary" value="Submit" name="cmplt-submit" placeholder="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+
+                <!-- Suggestion and Oppinion-->
+                <div class="col-md-12 dnns-sggt mb-3">
+                    <h2>Suggestion & Oppinion</h2>
+                    <form action="" class="row" >
+                        <div class="col-md-6">
+
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="sggt-subject" id="sggt-subject" placeholder="Subject" required>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <textarea  class="form-control"name="sggt-detail" id="" cols="30" rows="5" placeholder="Detail" required></textarea>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <input class="form-control" type="submit" class="btn btn-primary" value="Submit" name="sggt-submit" placeholder="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+
+                <!-- Order Comment-->
+                <div class="col-md-12 dnns-cmmt mb-3">
+                    <h2>Order Comment</h2>
+                    <form action="" class="row" >
+                        <div class="col-md-6">
+                            
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="cmmt-subject" id="cmmt-subject" placeholder="Subject" required>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <textarea  class="form-control"name="cmmt-detail" id="" cols="30" rows="5" placeholder="Detail" required></textarea>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <input class="form-control" type="submit" class="btn btn-primary" value="Submit" name="cmmt-submit" placeholder="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+
+                <!-- Notify on Discounts-->
+                <div class="col-md-12 dnns-dcnt mb-3">
+                    <h2>Discount Notifications</h2>
+                    <form action="" class="row" >
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                                <input class="form-control" type="email" name="dcnt-email" id="dcnt-email" placeholder="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <input class="form-control" type="submit" class="btn btn-primary" value="Submit" name="dcnt-submit" placeholder="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+
+                <!-- Work With Us-->
+                <div class="col-md-12 dnns-wwus mb-3">
+                    <h2>Work With Us</h2>
+                    <form action="" class="row" >
+                        <div class="col-md-6">
+                            
+                            <div class="row dnns-wwus-row">
+
+                            
+                                <div class="col-md-4 form-group" >
+                                    <input class="form-control" type="name" name="wwus-name" id="wwus-name" placeholder="Name" pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$" required>
+                                </div>
+
+                                <div class="col-md-4 form-group" >
+                                    <input class="form-control" type="surname" name="wwus-surname" id="wwus-surname" placeholder="Surname" pattern="^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$" required>
+                                </div>
+
+                                <div class="col-md-4 form-group" >
+                                    <input class="form-control" type="tel" name="wwus-tel" id="wwus-tel" placeholder="Phone" pattern="\+?[0-9]{10,15}"  srequired>
+                                </div>
+
+                                <div class="col-md-4 form-group" >
+                                    <input class="form-control" type="email" name="wwus-mail" id="wwus-mail" placeholder="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                                </div>
+
+                                <div class="col-md-4 form-group" >
+                                    <input class="form-control" type="date" name="wwus-birth" id="wwus-birth" placeholder="Birthday" required>
+                                </div>
+
+                                <div class="col-md-4 form-group dnns-wwus-items" >
+                                    <input class="form-control" type="file" name="wwus-cv" id="wwus-cv" placeholder="CV" required>
+                                </div>
+
+                                <div class="col-md-12 form-group" >
+                                    <textarea  class="form-control"name="wwus-submission" id="wwus-submission" cols="30" rows="5" placeholder="Submission" required></textarea>
+                                </div>
+
+                                <div class="col-md-12 form-group" >
+                                    <input class="form-control" type="submit" class="btn btn-primary" value="Submit" name="wwwus-submit" placeholder="Submit">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="dnns-footer">
+        <div class="container pt-5 pb-5 dnns-footer-main-cntr" > 
+
+            <div class="row dnns-footer-main-row" >
+                
+                <!-- Map -->
+                <div class="col-md-8 dnns-footer-iframe">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d773.6017540938758!2d34.12036205836455!3d39.142723275909546!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d50d492db57789%3A0x7f131464dc8c810c!2zTcO8aGVuZGlzbGlrIE1pbWFybMSxayBGYWvDvGx0ZXNp!5e0!3m2!1str!2str!4v1716036349089!5m2!1str!2str" width="800" height="600"  allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>    
+                </div>
+                <!-- Other -->
+                <div class="col-md-4 dnns-footer-other">
+                    <div class="row dnns-footer-other-row" >
+                        
+                        <!-- Social -->
+                        <div class="col-md-12 pb-5 dnns-footer-social">
+                            <div class="row dnns-footer-social-row" >
+                                <div class="col-md-3" >
+                                    <a href="https://facebook.com/" >
+                                        <img src="images/facebook-icon.png" alt="facebook_icon">
+                                    </a>
+                                </div>
+                                <div class="col-md-3" >
+                                    <a href="https://twitter.com/" >
+                                        <img src="images/twitter-icon.png" alt="twitter_icon">
+                                    </a>
+                                </div>
+                                <div class="col-md-3" >
+                                    <a href="https://youtube.com/" >
+                                        <img src="images/youtube-icon.png" alt="youtube_icon">
+                                    </a>
+                                </div>
+                                <div class="col-md-3" >
+                                    <a href="https://intagram.com/" >
+                                        <img src="images/instagram-icon.png" alt="intagram_icon">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 pb-5 dnns-footer-contact">
+                            <div class="row dnns-footer-contact-row" >
+                                <div class="col-md-12 pb-3" >
+                                    <div class="row dnns-footer-contact-sub-row" >
+                                        <div class="col-md">
+                                            <h2 >Order Line</h2>
+                                        </div>
+                                        <hr >
+                                        <div class="col-md">
+                                            <h3>
+                                                <a href="tel:+903862803800" >
+                                                    <span>0386 280 38 00</span>
+                                                </a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 pb-3" >
+                                    <div class="row dnns-footer-contact-sub-row" >
+                                        <div class="col-md">
+                                            <h2 >Suggestion Line</h2>
+                                        </div>
+                                        <hr>
+                                        <div class="col-md">
+                                            <h3>
+                                                <a href="tel:+908504410244" >
+                                                    <span>0850 441 02 44</span>
+                                                </a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 pb-3 pt-5" >
+                                    <div class="row dnns-footer-contact-sub-row" >
+                                        <div class="col-md">
+                                            <h3 >Contact Us</h3>
+                                        </div>
+                                        <hr>
+                                        <div class="col-md">
+                                            <h5>
+                                                <a href="mail:muratisik@ahievran.edu.tr" >
+                                                    <span>muratisik@ahievran.edu.tr</span>
+                                                </a>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span id="scrollToTopBtn">↑ Top</span>
+    </section>
+</body>
+
+<script src="js/contact.js"></script>
+<script src="js/script.js"></script>
+</html>

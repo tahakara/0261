@@ -1,0 +1,448 @@
+body {
+    font-family:Hind Vadodara, sans-serif;
+    background-color: black !important;
+    padding-top: 15vh;
+}
+
+
+/* DONINOS Header */
+    #isWorking {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        /* display: none; Hidden by default */
+        background-color: #f0f0f7;
+        color: rgb(0, 0, 0);
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 1000;
+    }
+
+    #isWorking:hover {
+        background-color: #006490;
+    }
+
+    .dnns-header >  .container-fluid {
+        padding: 0;
+    }
+
+    .dnns-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 99;
+    }
+
+    .dnns-main-header {
+        background-color: black;
+    }
+
+    .dnns-main-header-row {
+        height: 10vh;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+        align-items: stretch;
+    }
+
+    .dnns-header-banner {
+        display: flex;align-items: center;justify-content: space-evenly;
+    }
+
+    .dnns-header-banner > a > img {
+        max-height: 10vh;
+    }
+
+    .dnns-header-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .dnns-header-naw-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .dnns-header-naw-row > div > a {
+        padding: 4vh;
+        text-decoration: none;
+        font-size: 20px;
+        color: white;
+    }
+
+    .dnns-header-cart {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dnns-header-cart > a {
+        padding-top: 2vh;
+        padding-bottom: 2vh;
+        padding-right: 4vh;
+        padding-left: 4vh;
+        text-decoration: none;
+        font-size: 25px;
+        color: white;
+    }
+
+    .dnns-header-cart > a > span > i, .cart-icon-span {
+        color: white;
+    }
+
+    .dnns-sub-header {
+        background-color: white;
+    }
+
+    .dnns-sub-header-row {
+        display: flex;
+        flex-direction: row;
+        height: 5vh;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .dnns-sub-header-col {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .dnns-delivery-opt {
+        display: flex;
+        justify-content: space-around;
+        margin-left: 1vw;
+        margin-right: 1vw;
+        background-color: white;
+        padding: 1vh;
+        border-radius: 20px;
+        border: black solid 1px;
+        cursor: pointer;
+    }
+
+    .dnns-delivery-opt > div {
+        font-size: 12px;
+    }
+    
+    .dnns-delivery-opt > div > i {
+        margin-right: 0.25vw;
+        font-size: medium;
+    }
+
+    .dnns-delivery-opt > div > span {
+        font-weight: 700;
+    }
+
+    .dnns-delivery-loc {
+        display: flex;
+        justify-content: space-around;
+        margin-right: 1vw;
+        background-color: #f0f0f7;
+        padding: 1vh;
+        border-radius: 20px;
+        border: black solid 1px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .dnns-delivery-loc > div {
+        font-size: 12px;
+    }
+
+    .dnns-delivery-loc > i {
+        color: #505061;
+        margin-right: 0.25vw;
+        font-size: medium;
+    }
+
+
+    .dnns-delivery-loc > span {
+        font-weight: 500;
+    }
+
+    .cartMenu {
+        position: fixed;
+        top: 15vh;
+        right: 5vw;
+        display: none; 
+        border:black 1px solid;
+        overflow: scroll;
+        overflow-x: unset;
+        background-color: #dfdfe6;
+        color: rgb(0, 0, 0);
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 1000;
+        width: 30vw;
+        height: 85vh;
+    }
+
+    .cartMenu > row {
+        display: flex; 
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: space-evenly;
+    }
+
+    .cart-item {
+        height: 10vh;
+        display: flex;
+        background-color: rgb(255, 255, 255);
+        border: black 1px solid;
+        border-radius: 2vh;
+        flex-direction: row;
+        /* justify-content: flex-start; */
+        align-items: center;
+        text-align: center;
+    }
+
+    .cart-item > row {
+        display: flex; 
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: space-evenly;
+    }
+
+    .cart-item-image {
+        max-height: 9vh;
+        border-radius: 10px;
+    }
+
+    .cart-item-name-parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly
+    }
+
+    .cart-item-price {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .cart-item-price-parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .cart-item-delete-parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly
+    }
+
+    .cart-total-item-parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly
+    }
+
+    .cart-total-price-parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly
+    }
+
+    .cart-total-pay-parent, .cart-total-price{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly
+    }
+
+    .cart-total-price {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .cart-total-pay {
+        background-color: #f0f0f7; 
+        border-radius: 5px; 
+        border: black 1px solid; 
+        padding: 1vw;
+    }
+
+
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    
+    .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #006490;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    
+    input:checked + .slider {
+        background-color: #e31836   ;
+    }
+    
+    input:focus + .slider {
+        box-shadow: 0 0 1px #ffffff;
+    }
+    
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+    
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    
+    .slider.round:before {
+        border-radius: 50%;
+    }   
+
+
+
+    /* DONINOS Header End */
+
+
+
+    /* DONINOS Footer */
+
+    .dnns-footer-main-cntr {
+        min-height: 20vh;
+    }
+
+    .dnns-footer-main-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .dnns-footer-iframe > iframe {
+        border:0;
+        border-radius: 5vh;
+    }
+
+
+    .dnns-footer-other-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        align-content: space-around;
+    }
+
+    .dnns-footer-social-row {
+        max-height: 5vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center
+    }
+
+    .dnns-footer-social-row > div {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .dnns-footer-social-row > div > a {
+        padding: inherit;
+    }
+
+    .dnns-footer-contact-row {
+        max-height: 5vh;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center
+    }
+    
+    .dnns-footer-contact-row > .col-md-12 {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .dnns-footer-contact-sub-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: space-around;
+    }
+    
+    .dnns-footer-contact-sub-row > hr {
+        color: #f0f0f7 !important;
+        margin-bottom: 1vh;
+    }
+    
+    .dnns-footer-contact-sub-row > div > h2 {
+        color: white;
+        margin-bottom: 0;
+    }
+    
+    .dnns-footer-contact-sub-row > div > h3 {
+        color: white;
+        margin-bottom: 0;
+    }
+
+    .dnns-footer-contact-sub-row > div > a {
+        text-decoration: none;
+    }
+
+    #scrollToTopBtn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none; /* Hidden by default */
+        background-color: #E31836;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 1000;
+    }
+
+    #scrollToTopBtn:hover {
+        background-color: #006490;
+    }
+    /* DONINOS Footer End */

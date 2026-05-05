@@ -1,0 +1,28 @@
+
+.dnns-cmmt > form {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly; 
+    align-items: center;
+}
+
+.dnns-wwus > form, .dnns-sggt > form, .dnns-cmmt > form, .dnns-cmplt > form{
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly; 
+    align-items: center;
+}
+
+.dnns-wwus-row > .form-group {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly; 
+    align-items: center;
+}
+
+.dnns-wwus-items {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly; 
+    align-items: center;
+}
