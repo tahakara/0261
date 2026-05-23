@@ -1,0 +1,5 @@
+COUCHDB_URL=http://admin:1234@localhost:5984/
+COUCHDB_USER=admin
+COUCHDB_PASSWORD=1234
+COUCHDB_DB=parking_lot
+PORT=5000
